@@ -13,12 +13,16 @@ public class PlayerCharacterAnimator : MonoBehaviour
     const string FallState = "Falling";
     const string LandState = "Landing";
     const string SprintState = "Sprint";
+    const string ChargeState = "Charge";
+    const string ThrowState = "Throw";
 
     Animator _animator = null;
+    Player _player = null;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        _player = GetComponent<Player>();
     }
 
     private void OnEnable()
@@ -29,6 +33,8 @@ public class PlayerCharacterAnimator : MonoBehaviour
         _thirdPersonMovement.StartFalling += OnStartFalling;
         _thirdPersonMovement.Land += OnLand;
         _thirdPersonMovement.StartSprinting += OnStartSprinting;
+        _player.Charging += OnCharging;
+        _player.Throw += OnThrow;
     }
 
     private void OnDisable()
@@ -39,6 +45,8 @@ public class PlayerCharacterAnimator : MonoBehaviour
         _thirdPersonMovement.StartFalling -= OnStartFalling;
         _thirdPersonMovement.Land -= OnLand;
         _thirdPersonMovement.StartSprinting -= OnStartSprinting;
+        _player.Charging -= OnCharging;
+        _player.Throw -= OnThrow;
     }
 
     public void OnIdle()
@@ -69,5 +77,24 @@ public class PlayerCharacterAnimator : MonoBehaviour
     private void OnStartSprinting()
     {
         _animator.CrossFadeInFixedTime(SprintState, .2f);
+    }
+
+    private void OnCharging()
+    {
+        _animator.CrossFadeInFixedTime(ChargeState, .2f);
+    }
+
+    private void OnThrow()
+    {
+        _animator.CrossFadeInFixedTime(ThrowState, .2f);
+        StartCoroutine(ThrowToIdle());
+    }
+
+    IEnumerator ThrowToIdle()
+    {
+        yield return new WaitForSeconds(0.433f);
+        _player.HasThrown = true;
+        _player.CanMove = true;
+        _player.Power = 100f;
     }
 }

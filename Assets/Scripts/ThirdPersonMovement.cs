@@ -12,8 +12,8 @@ public class ThirdPersonMovement : MonoBehaviour
     public event Action Land = delegate { };
     public event Action StartSprinting = delegate { };
 
-
     public CharacterController controller;
+    public Player _player;
     public Transform cam;
 
     public float sprintSpeed = 2f;
@@ -42,9 +42,8 @@ public class ThirdPersonMovement : MonoBehaviour
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
         Vector3 moveDir = Vector3.zero;
 
-        if (direction.magnitude >= 0.1f)
+        if (direction.magnitude >= 0.1f && _player.CanMove)
         {
-            //CheckIfStartedMoving();
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
@@ -68,11 +67,10 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
-            //_isSprinting = false;
             CheckIfStoppedMoving();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded && _player.CanMove)
         {
             Jump?.Invoke();
             _isRunning = false;
@@ -144,11 +142,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void CheckIfStoppedMoving()
     {
-        if (_isRunning || _isSprinting)
+        if ((_isRunning || _isSprinting || _player.HasThrown) && !_player.IsCharging)
         {
             Idle?.Invoke();
         }
         _isRunning = false;
         _isSprinting = false;
+        _player.HasThrown = false;
     }
 }
