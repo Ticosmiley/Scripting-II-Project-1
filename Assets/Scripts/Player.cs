@@ -16,10 +16,13 @@ public class Player : MonoBehaviour
 
     public ThirdPersonMovement _thirdPersonMovement;
 
+    AudioSource _audioSource;
+
     bool _isCharging = false;
     bool _hasThrown = false;
     bool _canMove = true;
     float _power = 100f;
+    float _lastThrow;
     public bool CanMove { get { return _canMove; } set { _canMove = value; } }
     public float Power { get { return _power; } set { _power = value; } }
     public bool HasThrown { get { return _hasThrown; } set { _hasThrown = value; } }
@@ -34,6 +37,7 @@ public class Player : MonoBehaviour
             _abilityLoadout?.EquipAbility(_startingAbility);
         }
         _thirdPersonMovement = GetComponent<ThirdPersonMovement>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     public void SetTarget(Transform newTarget)
@@ -43,8 +47,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && _thirdPersonMovement.controller.isGrounded)
+        if (Input.GetMouseButtonDown(0) && _thirdPersonMovement.controller.isGrounded && (Time.fixedTime - 0.5f > _lastThrow))
         {
+            _audioSource.Play();
+            _lastThrow = Time.fixedTime;
             Charging?.Invoke();
             _canMove = false;
             _isCharging = true;

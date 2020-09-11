@@ -126,3 +126,6 @@ MonoBehaviour:
   _fuseTime: 3
   _radius: 7
   _power: 400
+  _audioSource: {fileID: 3640695235673281842, guid: e7fb03aa73cc3494d8624fbf869faea4,
+    type: 3}
+  _explosion: {fileID: 100006, guid: e076683e0305e35498b8e8834978c0fa, type: 3}

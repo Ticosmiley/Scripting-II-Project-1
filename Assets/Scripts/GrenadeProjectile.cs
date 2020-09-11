@@ -11,7 +11,8 @@ public class GrenadeProjectile : MonoBehaviour
     [SerializeField] float _fuseTime = 3f;
     [SerializeField] float _radius = 3f;
     [SerializeField] float _power = 10f;
-
+    [SerializeField] GameObject _audioSource;
+    [SerializeField] GameObject _explosion;
     Vector3 _force;
 
     private void Awake()
@@ -41,6 +42,8 @@ public class GrenadeProjectile : MonoBehaviour
                 rb.AddExplosionForce(_power, explosionPos, _radius, 3.0f);
             }
         }
+        Instantiate(_audioSource, transform.position, Quaternion.identity);
+        Instantiate(_explosion, transform.position, Quaternion.identity);
         Destroy(transform.gameObject);
     }
 }
