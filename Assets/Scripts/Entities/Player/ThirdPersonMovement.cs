@@ -149,6 +149,11 @@ public class ThirdPersonMovement : MonoBehaviour
             }
             controller.Move(moveDir * Time.deltaTime);
         }
+
+        if (_player.IsDead)
+        {
+            _dashParticles.enableEmission = false;
+        }
     }
 
     private void CheckIfStartedMoving()
@@ -177,7 +182,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     IEnumerator RunningSteps()
     {
-        while (_isRunning && !_isSprinting)
+        while (_isRunning && !_isSprinting && !_player.IsDead && !_takingDamage)
         {
             AudioSource step = _footsteps[UnityEngine.Random.Range(0, 3)];
             step.PlayOneShot(step.clip, .5f);
@@ -187,7 +192,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     IEnumerator SprintSteps()
     {
-        while (_isSprinting)
+        while (_isSprinting && !_player.IsDead)
         {
             AudioSource step = _footsteps[UnityEngine.Random.Range(0, 3)];
             step.PlayOneShot(step.clip);
